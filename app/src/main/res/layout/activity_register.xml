@@ -5,62 +5,101 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#252533"
     tools:context=".RegisterActivity">
 
 
-    <Button
-        android:id="@+id/btn_reg_register"
-        android:layout_width="210dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/register_card"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Register"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_reg_confirm_password"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <EditText
-        android:id="@+id/et_reg_email"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="E-mail"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/et_reg_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="32dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/et_reg_password"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/et_reg_confirm_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_reg_email"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <EditText
-        android:id="@+id/et_reg_confirm_password"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="Confirm Password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/btn_reg_register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_reg_password"
-        app:layout_constraintVertical_bias="0.5" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:padding="24dp">
+
+
+            <EditText
+                android:id="@+id/et_reg_email"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:autofillHints="emailAddress"
+                android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/open_sans_light"
+                android:hint="E-mail"
+                android:inputType="text|textEmailAddress"
+                android:paddingHorizontal="16dp"
+                android:textColorHint="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <EditText
+                android:id="@+id/et_reg_password"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:autofillHints="password"
+                android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/open_sans_light"
+                android:hint="Hasło"
+                android:inputType="textPassword"
+                android:paddingHorizontal="16dp"
+                android:textColorHint="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_reg_email" />
+
+
+            <EditText
+                android:id="@+id/et_reg_confirm_password"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:autofillHints="password"
+                android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/open_sans_light"
+                android:hint="Powtórz hasło"
+                android:inputType="textPassword"
+                android:paddingHorizontal="16dp"
+                android:textColorHint="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_reg_password" />
+
+
+            <Button
+                android:id="@+id/btn_reg_register"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="45dp"
+                android:background="@drawable/rounded_button"
+                android:fontFamily="@font/open_sans_light"
+                android:text="Rejestracja"
+                android:textColor="#FAFAFA"
+                android:textColorLink="#E4D6D6"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_reg_confirm_password" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
