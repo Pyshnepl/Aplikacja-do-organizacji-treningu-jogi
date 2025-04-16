@@ -24,7 +24,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="450dp"
             android:padding="24dp">
 
 
@@ -45,6 +45,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <EditText
+                android:id="@+id/et_reg_username"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:autofillHints="emailAddress"
+                android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/open_sans_light"
+                android:hint="Username"
+                android:inputType="text|textEmailAddress"
+                android:paddingHorizontal="16dp"
+                android:textColorHint="#000000"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_reg_email" />
+
 
             <EditText
                 android:id="@+id/et_reg_password"
@@ -61,7 +78,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_reg_email" />
+                app:layout_constraintTop_toBottomOf="@id/et_reg_username" />
 
 
             <EditText
