@@ -45,14 +45,11 @@ class RegisterActivity : AppCompatActivity() {
                             "password" to password
                         )
 
-                        firestore.collection("Users")
-                            .add(user)
-                            .addOnSuccessListener { documentReference ->
-                                Toast.makeText(this, "Poprawnie dodano użytkownika do bazy danych", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                            }
+                        firestore.collection("Users").document(email).set(user)
+                            .addOnSuccessListener { Toast.makeText(this, "Poprawnie dodano użytkownika do bazy danych", Toast.LENGTH_SHORT).show() }
+                            .addOnFailureListener { e -> Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show() }
+
+
 
                         // Przejście do strony głównej aplikacji
                         val intent = Intent(this, HomeActivity::class.java)
