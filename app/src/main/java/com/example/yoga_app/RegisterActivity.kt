@@ -56,6 +56,7 @@ class RegisterActivity : AppCompatActivity() {
 
                         // Przejście do strony głównej aplikacji
                         val intent = Intent(this, HomeActivity::class.java)
+                        intent.putExtra("extra_email",email)
                         startActivity(intent)
                         finish()
                     } else {
