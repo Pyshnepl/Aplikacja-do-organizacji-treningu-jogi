@@ -1,5 +1,6 @@
 package com.example.yoga_app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -51,7 +52,13 @@ class HomeActivity : AppCompatActivity() {
             }
 
 
-        // nadpisanie tekstu przycisku na nick użytkownika
+        // Przejście do okna sesji "relax"
+        binding.buttonRelaksHp.setOnClickListener {
+            val intent = Intent(this, RelaxPosesActivity::class.java)
+            intent.putExtra("extra_email",email)
+            startActivity(intent)
+
+        }
 
     }
 }

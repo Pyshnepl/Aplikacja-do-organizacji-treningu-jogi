@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Yoga_app"
         tools:targetApi="31">
         <activity
+            android:name=".RelaxCourseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RelaxPosesActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity
