@@ -1,5 +1,6 @@
 package com.example.yoga_app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -39,37 +40,38 @@ class RelaxPosesActivity : AppCompatActivity() {
 
         // Rozwijanie/zwijanie opisu pozycji
         binding.btnPose1.setOnClickListener{
-            var tv_id = "tv_pose1"
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose1")
         }
 
         binding.btnPose2.setOnClickListener{
-            var tv_id = binding.tvPose2.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose2")
         }
         binding.btnPose3.setOnClickListener{
-            var tv_id = binding.tvPose3.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose3")
         }
         binding.btnPose4.setOnClickListener{
-            var tv_id = binding.tvPose4.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose4")
         }
         binding.btnPose5.setOnClickListener{
-            var tv_id = binding.tvPose5.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose5")
         }
         binding.btnPose6.setOnClickListener{
-            var tv_id = binding.tvPose6.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose6")
         }
         binding.btnPose7.setOnClickListener{
-            var tv_id = binding.tvPose7.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose7")
         }
         binding.btnPose8.setOnClickListener{
-            var tv_id = binding.tvPose8.id.toString()
-            hideDisplayDescription(tv_id)
+            hideDisplayDescription("tv_pose8")
+        }
+
+
+        // Rozpoczecie sesji jogi
+        binding.btnStart.setOnClickListener{
+            val intent = Intent(this, RelaxCourseActivity::class.java)
+            intent.putExtra("extra_email",email)
+            startActivity(intent)
+            finish()
         }
 
     }

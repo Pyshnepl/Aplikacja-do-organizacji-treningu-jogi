@@ -9,7 +9,7 @@
     android:background="@color/blue">
 
     <Button
-        android:id="@+id/btb_Start"
+        android:id="@+id/btn_Start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Rozpocznij sesje"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/btb_Start"
+        app:layout_constraintTop_toBottomOf="@id/btn_Start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
