@@ -5,6 +5,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -36,11 +37,47 @@ class RelaxPosesActivity : AppCompatActivity() {
         // Pobieranie nazw pozycji z danego kursu
         loadButtonsFromFirestore()
 
+        // Rozwijanie/zwijanie opisu pozycji
+        binding.btnPose1.setOnClickListener{
+            var tv_id = "tv_pose1"
+            hideDisplayDescription(tv_id)
+        }
+
+        binding.btnPose2.setOnClickListener{
+            var tv_id = binding.tvPose2.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose3.setOnClickListener{
+            var tv_id = binding.tvPose3.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose4.setOnClickListener{
+            var tv_id = binding.tvPose4.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose5.setOnClickListener{
+            var tv_id = binding.tvPose5.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose6.setOnClickListener{
+            var tv_id = binding.tvPose6.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose7.setOnClickListener{
+            var tv_id = binding.tvPose7.id.toString()
+            hideDisplayDescription(tv_id)
+        }
+        binding.btnPose8.setOnClickListener{
+            var tv_id = binding.tvPose8.id.toString()
+            hideDisplayDescription(tv_id)
+        }
 
     }
 }
 
 private fun loadButtonsFromFirestore() {
+
+    // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
     firestore.collection("Courses")
         .document("Relax")
         .get()
@@ -63,7 +100,7 @@ private fun loadButtonsFromFirestore() {
                             var pose_name = document.getString("Name")
                             Log.i("POSE_NAME",pose_name.toString())
 
-                            //Dynamiczna edycja id
+                            //Dynamiczna edycja id z "pose_x, na "btn_posex
                             var index = key.replace("pose_","btn_pose")
                             Log.i("INDEX_EDITED",index.toString())
 
@@ -82,13 +119,49 @@ private fun loadButtonsFromFirestore() {
                         }
                 }
             }
-
         }
-        .addOnFailureListener{
-            // NAPRAWIĆ TOAST
-            // Toast.makeText(this,"Problem z odczytaniem bazy",Toast.LENGTH_SHORT).show()
+        .addOnFailureListener{ exception ->
+            Toast.makeText(binding.root.context,"Problem z odczytaniem bazy",Toast.LENGTH_SHORT).show()
         }
 }
 
+private fun hideDisplayDescription(tv_id: String){
+
+    // Szukanie tekstu do rozwinięcia
+    val context = binding.root.context
+    val textViewId = context.resources.getIdentifier(tv_id, "id", context.packageName)
+    val textView = binding.root.findViewById<TextView>(textViewId)
 
 
+    var pose_string = tv_id.replace("tv_pose","pose_").toString()
+
+    // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
+    firestore.collection("Courses")
+        .document("Relax")
+        .get()
+        .addOnSuccessListener { document ->
+            val data = document.get(pose_string).toString() // Pobieranie id pozycji z kursu
+            Log.d("CLICK INFO", data)
+
+            // Odwołanie do Exercise/Exercise_idx
+                firestore.collection("Exercise").document(data)
+                    .get()
+                    .addOnSuccessListener{ document ->
+                        // Pobieranie tekstu z pola "Description"
+                        var description = document.getString("Description")
+                        Log.d("DESCRIPTION TEXT", description.toString())
+
+                        if (description != null) {
+                            // Nadpisywanie opisu z bazy danych
+                            if (textView.text.isEmpty()) {
+                                textView.setText(description)
+                            } else {
+                                textView.setText("")
+                            }
+                        }
+                    }
+        }
+        .addOnFailureListener{ exception ->
+            Toast.makeText(binding.root.context,"Problem z odczytaniem bazy",Toast.LENGTH_SHORT).show()
+        }
+}
