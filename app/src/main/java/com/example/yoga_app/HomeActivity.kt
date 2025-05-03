@@ -30,8 +30,6 @@ class HomeActivity : AppCompatActivity() {
         // pobieranie maila z logowania lub rejestracji (mail służy jako ID dokumentu)
         val email = intent.getStringExtra("extra_email").toString()
 
-        //wczytanie przycisku z nazwą użytkownika
-        val btn_username = binding.buttonUsername
 
 
         // Pobieranie danych z bazy po ID
@@ -42,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
                     Log.d("FIRESTORE","DocumentSnapshot data: ${document.data}")
 
                     // Nadpisanie tekstu nazwą użytkownika
-                    btn_username.setText(document.getString("username"))
+                    binding.buttonUsername.setText(document.getString("username"))
                 } else {
                     Log.i("FIRESTORE","No such document exist")
                 }
