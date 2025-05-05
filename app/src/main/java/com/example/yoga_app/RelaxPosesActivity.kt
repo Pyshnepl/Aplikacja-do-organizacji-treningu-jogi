@@ -16,6 +16,7 @@ import com.example.yoga_app.databinding.ActivityHomeBinding
 import com.example.yoga_app.databinding.ActivityRelaxPosesBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.DocumentReference
+import androidx.core.content.ContextCompat
 
 
 
@@ -29,40 +30,40 @@ class RelaxPosesActivity : AppCompatActivity() {
 
         // pobieranie maila z logowania lub rejestracji (mail służy jako ID dokumentu)
         val email = intent.getStringExtra("extra_email").toString()
-
+        val doc_name = intent.getStringExtra("extra_document").toString()
         firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityRelaxPosesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Pobieranie nazw pozycji z danego kursu
-        loadButtonsFromFirestore()
+        loadButtonsFromFirestore(doc_name)
 
         // Rozwijanie/zwijanie opisu pozycji
         binding.btnPose1.setOnClickListener{
-            hideDisplayDescription("tv_pose1")
+            hideDisplayDescription("tv_pose1",doc_name)
         }
 
         binding.btnPose2.setOnClickListener{
-            hideDisplayDescription("tv_pose2")
+            hideDisplayDescription("tv_pose2",doc_name)
         }
         binding.btnPose3.setOnClickListener{
-            hideDisplayDescription("tv_pose3")
+            hideDisplayDescription("tv_pose3",doc_name)
         }
         binding.btnPose4.setOnClickListener{
-            hideDisplayDescription("tv_pose4")
+            hideDisplayDescription("tv_pose4",doc_name)
         }
         binding.btnPose5.setOnClickListener{
-            hideDisplayDescription("tv_pose5")
+            hideDisplayDescription("tv_pose5",doc_name)
         }
         binding.btnPose6.setOnClickListener{
-            hideDisplayDescription("tv_pose6")
+            hideDisplayDescription("tv_pose6",doc_name)
         }
         binding.btnPose7.setOnClickListener{
-            hideDisplayDescription("tv_pose7")
+            hideDisplayDescription("tv_pose7",doc_name)
         }
         binding.btnPose8.setOnClickListener{
-            hideDisplayDescription("tv_pose8")
+            hideDisplayDescription("tv_pose8",doc_name)
         }
 
 
@@ -70,6 +71,7 @@ class RelaxPosesActivity : AppCompatActivity() {
         binding.btnStart.setOnClickListener{
             val intent = Intent(this, RelaxCourseActivity::class.java)
             intent.putExtra("extra_email",email)
+            intent.putExtra("extra_dcument",doc_name)
             startActivity(intent)
             finish()
         }
@@ -77,11 +79,27 @@ class RelaxPosesActivity : AppCompatActivity() {
     }
 }
 
-private fun loadButtonsFromFirestore() {
+private fun loadButtonsFromFirestore(doc_name: String) {
 
-    // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
+    // Zmiana koloru tła
+    if (doc_name == "Relax"){
+        binding.main.setBackgroundColor(
+            ContextCompat.getColor(binding.root.context, R.color.blue)
+        )
+    }else if (doc_name == "Zdrowy kręgosłup") {
+        binding.main.setBackgroundColor(
+            ContextCompat.getColor(binding.root.context, R.color.light_green)
+        )
+    }else{
+        binding.main.setBackgroundColor(
+            ContextCompat.getColor(binding.root.context, R.color.purple)
+        )
+    }
+
+
+    // Przeglądanie kolejnych elementów w kolekcji Courses i dokumencie np.Relax
     firestore.collection("Courses")
-        .document("Relax")
+        .document(doc_name)
         .get()
         .addOnSuccessListener { document ->
             val data = document.data // Pobieranie id pozycji z kursu
@@ -127,7 +145,7 @@ private fun loadButtonsFromFirestore() {
         }
 }
 
-private fun hideDisplayDescription(tv_id: String){
+private fun hideDisplayDescription(tv_id: String,doc_name: String){
 
     // Szukanie tekstu do rozwinięcia
     val context = binding.root.context
@@ -139,29 +157,29 @@ private fun hideDisplayDescription(tv_id: String){
 
     // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
     firestore.collection("Courses")
-        .document("Relax")
+        .document(doc_name)
         .get()
         .addOnSuccessListener { document ->
             val data = document.get(pose_string).toString() // Pobieranie id pozycji z kursu
             Log.d("CLICK INFO", data)
 
             // Odwołanie do Exercise/Exercise_idx
-                firestore.collection("Exercise").document(data)
-                    .get()
-                    .addOnSuccessListener{ document ->
-                        // Pobieranie tekstu z pola "Description"
-                        var description = document.getString("Description")
-                        Log.d("DESCRIPTION TEXT", description.toString())
+            firestore.collection("Exercise").document(data)
+                .get()
+                .addOnSuccessListener{ document ->
+                    // Pobieranie tekstu z pola "Description"
+                    var description = document.getString("Description")
+                    Log.d("DESCRIPTION TEXT", description.toString())
 
-                        if (description != null) {
-                            // Nadpisywanie opisu z bazy danych
-                            if (textView.text.isEmpty()) {
-                                textView.setText(description)
-                            } else {
-                                textView.setText("")
-                            }
+                    if (description != null) {
+                        // Nadpisywanie opisu z bazy danych
+                        if (textView.text.isEmpty()) {
+                            textView.setText(description)
+                        } else {
+                            textView.setText("")
                         }
                     }
+                }
         }
         .addOnFailureListener{ exception ->
             Toast.makeText(binding.root.context,"Problem z odczytaniem bazy",Toast.LENGTH_SHORT).show()
