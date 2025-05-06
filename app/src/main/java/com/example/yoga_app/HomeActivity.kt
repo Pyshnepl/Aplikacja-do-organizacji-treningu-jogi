@@ -52,28 +52,13 @@ class HomeActivity : AppCompatActivity() {
             }
 
 
-        // Przejście do okna sesji "Zdrowy kręgosłup"
-        binding.buttonZdrowykregoslupHp.setOnClickListener {
-            val intent = Intent(this, RelaxPosesActivity::class.java)
-            intent.putExtra("extra_email",email)
-            intent.putExtra("extra_document","Zdrowy kręgosłup")
-            startActivity(intent)
-        }
-
-        // Przejście do okna sesji "Relax"
+        // Przejście do okna sesji "relax"
         binding.buttonRelaksHp.setOnClickListener {
             val intent = Intent(this, RelaxPosesActivity::class.java)
             intent.putExtra("extra_email",email)
-            intent.putExtra("extra_document","Relax")
             startActivity(intent)
+
         }
 
-        // Przejście do okna sesji "Dolne Partie Ciała"
-        binding.buttonDolnepartiecialaHp.setOnClickListener {
-            val intent = Intent(this, RelaxPosesActivity::class.java)
-            intent.putExtra("extra_email",email)
-            intent.putExtra("extra_document","Dolne partie ciała")
-            startActivity(intent)
-        }
     }
 }
