@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -27,7 +28,7 @@ class RelaxPosesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // pobieranie maila z logowania lub rejestracji (mail służy jako ID dokumentu)
+
         val email = intent.getStringExtra("extra_email").toString()
 
         firestore = FirebaseFirestore.getInstance()
@@ -35,10 +36,10 @@ class RelaxPosesActivity : AppCompatActivity() {
         binding = ActivityRelaxPosesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Pobieranie nazw pozycji z danego kursu
+
         loadButtonsFromFirestore()
 
-        // Rozwijanie/zwijanie opisu pozycji
+
         binding.btnPose1.setOnClickListener{
             hideDisplayDescription("tv_pose1")
         }
@@ -66,7 +67,7 @@ class RelaxPosesActivity : AppCompatActivity() {
         }
 
 
-        // Rozpoczecie sesji jogi
+
         binding.btnStart.setOnClickListener{
             val intent = Intent(this, RelaxCourseActivity::class.java)
             intent.putExtra("extra_email",email)
@@ -79,15 +80,14 @@ class RelaxPosesActivity : AppCompatActivity() {
 
 private fun loadButtonsFromFirestore() {
 
-    // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
+
     firestore.collection("Courses")
         .document("Relax")
         .get()
         .addOnSuccessListener { document ->
-            val data = document.data // Pobieranie id pozycji z kursu
+            val data = document.data
 
-            // Wygamany "if", w celu potwierdzenia że data jest zmienną non-null,
-            // w przeciwnym wypadku nie można zrobić pętli "for"
+
             if (data != null) {
                 Log.i("FIREBASE MAP","Wynik: ${document.data}")//
 
@@ -127,43 +127,40 @@ private fun loadButtonsFromFirestore() {
         }
 }
 
-private fun hideDisplayDescription(tv_id: String){
+private fun hideDisplayDescription(tvId: String) {
+    val cardId = tvId.replace("tv_", "card_")
+    val ctx = binding.root.context
+    val cardView = binding.root
+        .findViewById<androidx.cardview.widget.CardView>(
+            ctx.resources.getIdentifier(cardId, "id", ctx.packageName)
+        )
 
-    // Szukanie tekstu do rozwinięcia
-    val context = binding.root.context
-    val textViewId = context.resources.getIdentifier(tv_id, "id", context.packageName)
-    val textView = binding.root.findViewById<TextView>(textViewId)
-
-
-    var pose_string = tv_id.replace("tv_pose","pose_").toString()
-
-    // Przeglądanie kolejnych elementó w kolekcji Courses i dokumencie Relax
-    firestore.collection("Courses")
-        .document("Relax")
-        .get()
-        .addOnSuccessListener { document ->
-            val data = document.get(pose_string).toString() // Pobieranie id pozycji z kursu
-            Log.d("CLICK INFO", data)
-
-            // Odwołanie do Exercise/Exercise_idx
-                firestore.collection("Exercise").document(data)
+    if (cardView.visibility == View.GONE) {
+        val poseKey = tvId.replace("tv_pose", "pose_")
+        firestore.collection("Courses").document("Relax")
+            .get()
+            .addOnSuccessListener { doc ->
+                val exerciseId = doc.getString(poseKey) ?: return@addOnSuccessListener
+                firestore.collection("Exercise").document(exerciseId)
                     .get()
-                    .addOnSuccessListener{ document ->
-                        // Pobieranie tekstu z pola "Description"
-                        var description = document.getString("Description")
-                        Log.d("DESCRIPTION TEXT", description.toString())
-
-                        if (description != null) {
-                            // Nadpisywanie opisu z bazy danych
-                            if (textView.text.isEmpty()) {
-                                textView.setText(description)
-                            } else {
-                                textView.setText("")
-                            }
-                        }
+                    .addOnSuccessListener { exDoc ->
+                        val desc = exDoc.getString("Description") ?: ""
+                        val tv = cardView.findViewById<TextView>(
+                            ctx.resources.getIdentifier(tvId, "id", ctx.packageName)
+                        )
+                        tv.text = desc
+                        cardView.visibility = View.VISIBLE
                     }
-        }
-        .addOnFailureListener{ exception ->
-            Toast.makeText(binding.root.context,"Problem z odczytaniem bazy",Toast.LENGTH_SHORT).show()
-        }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(ctx, "Problem z odczytaniem ćwiczenia", Toast.LENGTH_SHORT).show()
+                        Log.e("Firestore", "Błąd przy pobieraniu Exercise", exception)
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(ctx, "Problem z odczytaniem kursu", Toast.LENGTH_SHORT).show()
+                Log.e("Firestore", "Błąd przy pobieraniu Courses", exception)
+            }
+    } else {
+        cardView.visibility = View.GONE
+    }
 }
