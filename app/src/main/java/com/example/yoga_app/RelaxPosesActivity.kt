@@ -30,7 +30,7 @@ class RelaxPosesActivity : AppCompatActivity() {
 
 
         val email = intent.getStringExtra("extra_email").toString()
-        val doc_name = intent.getStringExtra("extra_document").toString()
+        var doc_name = intent.getStringExtra("extra_document").toString()
         firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityRelaxPosesBinding.inflate(layoutInflater)
@@ -43,7 +43,6 @@ class RelaxPosesActivity : AppCompatActivity() {
         binding.btnPose1.setOnClickListener{
             hideDisplayDescription("tv_pose1",doc_name)
         }
-
         binding.btnPose2.setOnClickListener{
             hideDisplayDescription("tv_pose2",doc_name)
         }
