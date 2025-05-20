@@ -114,6 +114,7 @@
                         android:id="@+id/tv_pose2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -152,6 +153,7 @@
                         android:id="@+id/tv_pose3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -189,6 +191,7 @@
                         android:id="@+id/tv_pose4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -226,6 +229,7 @@
                         android:id="@+id/tv_pose5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -264,6 +268,7 @@
                         android:id="@+id/tv_pose6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -302,6 +307,7 @@
                         android:id="@+id/tv_pose7"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>
@@ -340,6 +346,7 @@
                         android:id="@+id/tv_pose8"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_light"
                         android:padding="16dp"
                         android:textSize="20sp"
                         android:textColor="@android:color/black"/>

@@ -3,6 +3,7 @@ package com.example.yoga_app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -105,7 +106,7 @@ class RelaxCourseActivity : AppCompatActivity() {
         remainingTime = duration
         binding.pb.progress = 0
         isPaused = false
-        binding.btnPause.text = "Pauza"
+
 
         countdownJob = lifecycleScope.launch {
             var i = 0
@@ -129,16 +130,18 @@ class RelaxCourseActivity : AppCompatActivity() {
         }
 
         // Zatrzymanie kursu i zmiana tekstu przycisku
+        val iconPause = findViewById<ImageView>(R.id.icon_pause)
+
         binding.btnPause.setOnClickListener {
             isPaused = !isPaused
-
-            if (isPaused){
-                binding.btnPause.setText("Wznów")
-            }else{
-                binding.btnPause.setText("Zatrzymaj")
+            if (isPaused) {
+                iconPause.setImageResource(R.drawable.ic_play)
+            } else {
+                iconPause.setImageResource(R.drawable.ic_pause)
             }
-
         }
+
+
 
         // Kolejna pozycja kursu
         binding.btnNext.setOnClickListener {
