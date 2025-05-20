@@ -127,6 +127,10 @@ class RelaxCourseActivity : AppCompatActivity() {
             if (currentExerciseIndex >= exercises.size){
                 FinishActivity(email)
             }
+            else
+            {
+            loadExercise(currentExerciseIndex,email)
+            }
         }
 
         // Zatrzymanie kursu i zmiana tekstu przycisku
