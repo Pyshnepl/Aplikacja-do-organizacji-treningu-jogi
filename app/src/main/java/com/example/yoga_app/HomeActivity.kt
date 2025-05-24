@@ -76,5 +76,13 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Przejście do tworzenia kursów
+        binding.buttonDodajkursHp.setOnClickListener{
+            val intent = Intent(this, CustomCourseActivity::class.java)
+            intent.putExtra("extra_email",email)
+            startActivity(intent)
+        }
+
+
     }
 }
