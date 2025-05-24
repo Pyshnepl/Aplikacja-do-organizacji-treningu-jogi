@@ -1,6 +1,7 @@
 package com.example.yoga_app
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TableRow
@@ -16,7 +17,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 private lateinit var binding: ActivityCustomCourseBinding
 private lateinit var firestore: FirebaseFirestore
-
+private val checkBoxList = mutableListOf<CheckBox>()
+private val maxSelected = 8
 
 class CustomCourseActivity : AppCompatActivity() {
 
@@ -33,6 +35,12 @@ class CustomCourseActivity : AppCompatActivity() {
 
         // Utworzenie checkboxów, ładowanie nazw pozycji i obrazów z firestore
         loadPoses()
+
+
+
+
+
+
 
         // Zapisz sesje własną
         binding.btnSave.setOnClickListener{
@@ -65,6 +73,18 @@ class CustomCourseActivity : AppCompatActivity() {
                 val checkBox = CheckBox(this)
                 checkBox.setText(document.getString("Name"))
 
+                // Ograniczenie do 8 pozycji
+                checkBox.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked && getCheckedCount() >= maxSelected) {
+                        checkBox.isChecked = false
+                        Toast.makeText(this, "Możesz wybrać maksymalnie $maxSelected pozycji.", Toast.LENGTH_SHORT).show()
+                        Log.i("POSES_LIST",checkBoxList.toString())
+                    }
+                }
+
+                checkBoxList.add(checkBox) // Dodaj do listy zaznaczonych pozycji
+
+
                 // Dodanie obrazu
                 val imageView = ImageView(this) // tworzenie imageView
                 imageView.layoutParams = TableRow.LayoutParams(200,200) // ustawianie rozmiarów obrazu
@@ -91,6 +111,12 @@ class CustomCourseActivity : AppCompatActivity() {
         }
 
     }
+
+
+    private fun getCheckedCount(): Int {
+        return checkBoxList.count { it.isChecked }
+    }
+
 
     fun saveCourse(){
 

@@ -81,7 +81,7 @@
 
     <ScrollView
         android:layout_width="410dp"
-        android:layout_height="550dp"
+        android:layout_height="580dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_start">
@@ -94,6 +94,6 @@
             android:stretchColumns="1"
             android:padding="16dp" />
 
-
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
