@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CustomCourseActivity"
-    android:background="@color/red">
+    android:background="@color/red"
+    tools:context=".CustomCourseActivity">
 
     <Button
         android:id="@+id/btn_save"
@@ -23,8 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
         android:hint="Nazwa kursu"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_save"
@@ -54,7 +54,7 @@
         android:id="@+id/tv_estimated_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
+        android:text="00min 0sec"
         app:layout_constraintEnd_toStartOf="@+id/tv_poses_count"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,8 +91,8 @@
             android:id="@+id/tableLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:stretchColumns="1" />
 
     </ScrollView>
 

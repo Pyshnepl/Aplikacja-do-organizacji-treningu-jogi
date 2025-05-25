@@ -1,5 +1,6 @@
 package com.example.yoga_app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.CheckBox
@@ -8,11 +9,17 @@ import android.widget.TableRow
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.yoga_app.databinding.ActivityCustomCourseBinding
 import com.example.yoga_app.databinding.ActivityRelaxCourseBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.math.floor
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
 
 
 private lateinit var binding: ActivityCustomCourseBinding
@@ -37,11 +44,6 @@ class CustomCourseActivity : AppCompatActivity() {
         loadPoses()
 
 
-
-
-
-
-
         // Zapisz sesje własną
         binding.btnSave.setOnClickListener{
 
@@ -57,8 +59,11 @@ class CustomCourseActivity : AppCompatActivity() {
             // Intent albo do opisu pozycji albo do przebiegu kursu
         }
 
+
     }
 
+
+    // Funkcje pomocnicze
     fun loadPoses(){
 
     firestore.collection("Exercise")
@@ -73,13 +78,35 @@ class CustomCourseActivity : AppCompatActivity() {
                 val checkBox = CheckBox(this)
                 checkBox.setText(document.getString("Name"))
 
-                // Ograniczenie do 8 pozycji
+
+                // Odwołanie do checkBoxów
                 checkBox.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked && getCheckedCount() >= maxSelected) {
+
+                    // Ograniczenie wyboru do 8 pozycji
+                    if (isChecked && getCheckedCount() > maxSelected) {
                         checkBox.isChecked = false
                         Toast.makeText(this, "Możesz wybrać maksymalnie $maxSelected pozycji.", Toast.LENGTH_SHORT).show()
-                        Log.i("POSES_LIST",checkBoxList.toString())
+
+                        for (item in checkBoxList){
+                            if (item.isChecked) {
+                                Log.i("CHECKED_ITEMS", item.text.toString())
+                            }
+                        }
+
                     }
+
+                    //Nadpisanie liczby pozycji
+                    binding.tvPosesCount.setText(getCheckedCount().toString())
+
+                    // Nadpisanie czasu
+                    lifecycleScope.launch {
+                        val duration = getDuration()
+                        val min = floor(duration / 60.0).toInt()
+                        val sec = duration - min * 60
+                        val time = min.toString()+"min "+sec.toString()+"sec"
+                        binding.tvEstimatedTime.text = time
+                    }
+
                 }
 
                 checkBoxList.add(checkBox) // Dodaj do listy zaznaczonych pozycji
@@ -103,6 +130,7 @@ class CustomCourseActivity : AppCompatActivity() {
                 // Wstawianie wiersza do tabelii
                 binding.tableLayout.addView(row)
 
+
             }
 
         }
@@ -112,14 +140,35 @@ class CustomCourseActivity : AppCompatActivity() {
 
     }
 
-
-    private fun getCheckedCount(): Int {
+    // Zlicza zaznaczone pozycje
+    fun getCheckedCount(): Int {
         return checkBoxList.count { it.isChecked }
     }
 
 
     fun saveCourse(){
 
+    }
+
+    // Coroutine, w celu użycia drugiej filtracji po firestore
+    suspend fun getDuration(): Int{
+
+        var sum = 0
+        val checkedItems = checkBoxList.filter { it.isChecked }
+
+        for (item in checkedItems) {
+            val querySnapshot = firestore.collection("Exercise")
+                .whereEqualTo("Name", item.text)
+                .get()
+                .await()
+
+            for (document in querySnapshot.documents) {
+                val duration = document.getDouble("Duration")?.toInt() ?: 0
+                sum += duration
+            }
+        }
+
+        return sum
     }
 
 }
