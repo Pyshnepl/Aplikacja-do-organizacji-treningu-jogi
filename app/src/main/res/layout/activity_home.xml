@@ -148,6 +148,7 @@
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/red"
             android:elevation="8dp"
+            android:visibility="gone"
             android:fontFamily="@font/open_sans_light"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"

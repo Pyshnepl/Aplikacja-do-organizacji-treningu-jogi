@@ -47,16 +47,38 @@ class CustomCourseActivity : AppCompatActivity() {
         // Zapisz sesje własną
         binding.btnSave.setOnClickListener{
 
+            val course_name = binding.etCourseName.text
+
             // Wymagaj nazwy kursu
-            saveCourse()
+            if(!course_name.isEmpty()){
+                // Rozważyć tworzenie i aktualizacje
+                lifecycleScope.launch{
+                    saveCourse(email,course_name.toString())
+
+                    // Przejście do HomePage
+                    val intent = Intent(applicationContext, HomeActivity::class.java)
+                    intent.putExtra("extra_email",email)
+                    Log.i("CUSTOMCOURSE","Finished")
+                    startActivity(intent)
+                    finish()
+
+                }
+
+
+            }
+            else
+            {
+                Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+            }
+
 
         }
 
 
         // Zacznij sesje własną
         binding.btnStart.setOnClickListener{
-
-            // Intent albo do opisu pozycji albo do przebiegu kursu
+            // Intent do przebiegu kursu dodać extra liste???
+            // Put Extra Map of poses
         }
 
 
@@ -66,17 +88,22 @@ class CustomCourseActivity : AppCompatActivity() {
     // Funkcje pomocnicze
     fun loadPoses(){
 
-    firestore.collection("Exercise")
-        .get()
-        .addOnSuccessListener{ documents ->
+        checkBoxList.clear()
+        firestore.collection("Exercise")
+            .get()
+            .addOnSuccessListener{ documents ->
 
             for (document in documents){
                 // Dodanie kolumny z każdą iteracją
                 val row = TableRow(this)
+                // Potencjalne miejsce na manipulowanie wyglądem Row
+
 
                 // Dodanie Check Box
                 val checkBox = CheckBox(this)
                 checkBox.setText(document.getString("Name"))
+                // Potencjalne miejsce na manipulowanie wyglądem CheckBox
+
 
 
                 // Odwołanie do checkBoxów
@@ -116,6 +143,11 @@ class CustomCourseActivity : AppCompatActivity() {
                 val imageView = ImageView(this) // tworzenie imageView
                 imageView.layoutParams = TableRow.LayoutParams(200,200) // ustawianie rozmiarów obrazu
                 imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE // wybór skalowania
+                // Potencjalne miejsce na manipulowanie wyglądem Image View
+                //
+
+
+                //
 
                 val image_name = document.getString("Image") // pobieranie z firestore nazwy obrazu
                 val imgId = resources.getIdentifier(image_name, "drawable", packageName) // pobieranie id obrazu z Android Studio
@@ -146,8 +178,64 @@ class CustomCourseActivity : AppCompatActivity() {
     }
 
 
-    fun saveCourse(){
+    suspend fun saveCourse(userID: String, courseName:String){
 
+        val dataset = hashMapOf <String, Any>(
+            "user_ID" to userID,
+            "course_name" to courseName,
+        )
+        var docID = ""
+
+        //Znajdź kurs i pobierz pose_1
+        val existing = firestore.collection("Courses").whereEqualTo("user_ID",userID)
+            .limit(1)
+            .get()
+            .await()
+
+
+        // Jeśli dokument nie istnieje, to utworzy nowy z danymi z dataset
+        if (existing.isEmpty){
+
+        // Utworzenie kursu z id użytkownika i nazwą kursu
+            val docRef = firestore.collection("Courses")
+                .add(dataset)
+                .await()
+                docID = docRef.id
+        }
+        else
+        {
+            // Pobiera id pierwszego dokumentu
+            docID = existing.firstOrNull()?.id.orEmpty()
+            Log.i("KURS_ISTNIEJE","ID kursu to :${docID}")
+        }
+
+        // Nadpisanie mapy "dataset", o nazwy pozycji
+        var num = 1
+        for (item in checkBoxList){
+
+            if (item.isChecked){
+                var pose_index = "pose_"+num.toString()
+                num ++
+                var exerciseDoc = firestore.collection("Exercise").whereEqualTo("Name",item.text)
+                    .get()
+                    .await()
+
+                var exerciseId = exerciseDoc.firstOrNull()?.id.toString()
+                dataset[pose_index] = exerciseId
+                Log.i("NADPISANIE","${pose_index} = ${exerciseId}")
+
+            }
+
+        }
+
+        Log.i("NEW_DATA",dataset.toString())
+
+
+        // Aktualizuj od pose_1, aż po pose_8
+        firestore.collection("Courses").document(docID)
+            .update(dataset)
+            .await()
+        Toast.makeText(this,"Utworzono kurs własny", Toast.LENGTH_SHORT).show()
     }
 
     // Coroutine, w celu użycia drugiej filtracji po firestore
