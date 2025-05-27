@@ -70,6 +70,21 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
 
+        // Przejście do kursu własnego
+        binding.buttonCustomkursHp.setOnClickListener{
+            val intent = Intent(this, RelaxPosesActivity::class.java)
+            intent.putExtra("extra_email",email)
+            lifecycleScope.launch{
+                var docRef = firestore.collection("Courses").whereEqualTo("user_ID",email)
+                    .get()
+                    .await()
+
+                intent.putExtra("extra_document",docRef.documents[0].id)
+                startActivity(intent)
+            }
+
+
+        }
 
     }
 

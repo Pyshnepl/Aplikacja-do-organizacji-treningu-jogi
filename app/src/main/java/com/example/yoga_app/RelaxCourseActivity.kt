@@ -17,15 +17,20 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.*
 
-private lateinit var binding: ActivityRelaxCourseBinding
-private lateinit var firestore: FirebaseFirestore
-private val exercises = mutableListOf<String>()
-private var currentExerciseIndex = 0
-private var countdownJob: Job? = null
-private var isPaused = false
-private var remainingTime = 0
+
 
 class RelaxCourseActivity : AppCompatActivity() {
+
+
+    private lateinit var binding: ActivityRelaxCourseBinding
+    private lateinit var firestore: FirebaseFirestore
+    private val exercises = mutableListOf<String>()
+    private var currentExerciseIndex = 0
+    private var countdownJob: Job? = null
+    private var isPaused = false
+    private var remainingTime = 0
+    private var max_poses = 8
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +72,12 @@ class RelaxCourseActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { document ->
                 // Pobranie wszystkich pozycji do listy
-                document.data?.values?.forEach { value ->
-                exercises.add(value.toString())
-            }
+                for (i in 1..max_poses) {
+                    val pose = document.getString("pose_$i")
+                    if (!pose.isNullOrBlank()) {
+                        exercises.add(pose)
+                    }
+                }
                 if (exercises.isNotEmpty()) {
                     loadExercise(currentExerciseIndex, email)
                 }

@@ -20,6 +20,7 @@ import kotlin.math.floor
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
+import com.google.firebase.firestore.FieldValue
 
 
 private lateinit var binding: ActivityCustomCourseBinding
@@ -249,7 +250,16 @@ class CustomCourseActivity : AppCompatActivity() {
                 dataset[pose_index] = exerciseId
                 Log.i("NADPISANIE","${pose_index} = ${exerciseId}")
 
+
+
             }
+
+        }
+
+        while (num < maxSelected + 1){
+            var pose_index = "pose_"+num.toString()
+            dataset[pose_index] = FieldValue.delete()
+            num++
 
         }
 
