@@ -17,51 +17,67 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.*
 
-private lateinit var binding: ActivityRelaxCourseBinding
-private lateinit var firestore: FirebaseFirestore
-private val exercises = mutableListOf<String>()
-private var currentExerciseIndex = 0
-private var countdownJob: Job? = null
-private var isPaused = false
-private var remainingTime = 0
+
 
 class RelaxCourseActivity : AppCompatActivity() {
+
+
+    private lateinit var binding: ActivityRelaxCourseBinding
+    private lateinit var firestore: FirebaseFirestore
+    private val exercises = mutableListOf<String>()
+    private var currentExerciseIndex = 0
+    private var countdownJob: Job? = null
+    private var isPaused = false
+    private var remainingTime = 0
+    private var max_poses = 8
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val doc_name = intent.getStringExtra("extra_document").toString()
         var email = intent.getStringExtra("extra_email").toString()
+        var extra_list = intent.getStringArrayListExtra("extra_list")
         firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityRelaxCourseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadScreen(doc_name,email)
+        loadScreen(doc_name,email,extra_list)
 
     }
 
-    private fun loadScreen(doc_name: String,email: String){
+    private fun loadScreen(doc_name: String, email: String, extra_list: ArrayList<String>?){
 
         // Zmiana koloru tła
         val colorId = when (doc_name) {
             "Relax" -> R.color.blue
             "Zdrowy kręgosłup" -> R.color.light_green
-            else -> R.color.purple
+            "Dolne partie ciała" -> R.color.purple
+            else -> R.color.red
         }
         binding.main.setBackgroundColor(ContextCompat.getColor(this, colorId))
 
         // Opróżnianie poprzednich danych po zmianie karty
         exercises.clear()
+        // Aktualizuj liste o pozycje z CustomCourse,
+        // jeśli "extra_list" nie jest puste
+        extra_list?.let{
+            exercises.addAll(it)
+        }
+
         currentExerciseIndex = 0
 
         firestore.collection("Courses").document(doc_name)
             .get()
             .addOnSuccessListener { document ->
                 // Pobranie wszystkich pozycji do listy
-                document.data?.values?.forEach { value ->
-                exercises.add(value.toString())
-            }
+                for (i in 1..max_poses) {
+                    val pose = document.getString("pose_$i")
+                    if (!pose.isNullOrBlank()) {
+                        exercises.add(pose)
+                    }
+                }
                 if (exercises.isNotEmpty()) {
                     loadExercise(currentExerciseIndex, email)
                 }
