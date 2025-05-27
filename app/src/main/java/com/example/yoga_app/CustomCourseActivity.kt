@@ -70,15 +70,40 @@ class CustomCourseActivity : AppCompatActivity() {
             {
                 Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
             }
-
-
         }
 
 
         // Zacznij sesje własną
         binding.btnStart.setOnClickListener{
-            // Intent do przebiegu kursu dodać extra liste???
-            // Put Extra Map of poses
+            // Intent do przebiegu kursu dodać extra liste
+            // Implementacja intentu
+            val intent = Intent(this, RelaxCourseActivity::class.java)
+            intent.putExtra("extra_email",email)
+
+            var extra_list = ArrayList<String>()
+            // Nadpisanie listy "extra_list", o nazwy pozycji
+            var num = 1
+            lifecycleScope.launch{
+                for (item in checkBoxList){
+
+                    if (item.isChecked){
+
+                        var exerciseDoc = firestore.collection("Exercise").whereEqualTo("Name",item.text)
+                            .get()
+                            .await()
+
+                        var exerciseId = exerciseDoc.firstOrNull()?.id.toString()
+                        extra_list.add(exerciseId)
+                    }
+                }
+                Log.i("EXTRA_LIST",extra_list.toString())
+                intent.putExtra("extra_list",extra_list)
+                startActivity(intent)
+                finish()
+
+            }
+
+
         }
 
 
@@ -258,5 +283,7 @@ class CustomCourseActivity : AppCompatActivity() {
 
         return sum
     }
+
+
 
 }

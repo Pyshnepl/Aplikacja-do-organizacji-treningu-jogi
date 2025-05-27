@@ -32,27 +32,35 @@ class RelaxCourseActivity : AppCompatActivity() {
 
         val doc_name = intent.getStringExtra("extra_document").toString()
         var email = intent.getStringExtra("extra_email").toString()
+        var extra_list = intent.getStringArrayListExtra("extra_list")
         firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityRelaxCourseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadScreen(doc_name,email)
+        loadScreen(doc_name,email,extra_list)
 
     }
 
-    private fun loadScreen(doc_name: String,email: String){
+    private fun loadScreen(doc_name: String, email: String, extra_list: ArrayList<String>?){
 
         // Zmiana koloru tła
         val colorId = when (doc_name) {
             "Relax" -> R.color.blue
             "Zdrowy kręgosłup" -> R.color.light_green
-            else -> R.color.purple
+            "Dolne partie ciała" -> R.color.purple
+            else -> R.color.red
         }
         binding.main.setBackgroundColor(ContextCompat.getColor(this, colorId))
 
         // Opróżnianie poprzednich danych po zmianie karty
         exercises.clear()
+        // Aktualizuj liste o pozycje z CustomCourse,
+        // jeśli "extra_list" nie jest puste
+        extra_list?.let{
+            exercises.addAll(it)
+        }
+
         currentExerciseIndex = 0
 
         firestore.collection("Courses").document(doc_name)
