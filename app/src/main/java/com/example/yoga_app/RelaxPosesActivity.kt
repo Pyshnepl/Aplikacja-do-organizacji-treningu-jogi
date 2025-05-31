@@ -94,7 +94,7 @@ class RelaxPosesActivity : AppCompatActivity() {
             "Relax" -> R.color.blue
             "Zdrowy kręgosłup" -> R.color.light_green
             "Dolne partie ciała" -> R.color.purple
-            else -> R.color.red
+            else -> R.color.custom_red
         }
         binding.main.setBackgroundColor(ContextCompat.getColor(binding.root.context, colorId))
 

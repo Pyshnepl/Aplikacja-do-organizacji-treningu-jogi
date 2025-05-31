@@ -5,14 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/red"
+    android:background="#E9E9E9"
     tools:context=".CustomCourseActivity">
 
     <Button
         android:id="@+id/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:elevation="8dp"
+        android:backgroundTint="#AF2C2C"
+        android:fontFamily="@font/open_sans_light"
         android:text="Zapisz kurs"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/et_course_name"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +27,12 @@
         android:id="@+id/et_course_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:ems="10"
+        android:fontFamily="@font/open_sans_light"
         android:hint="Nazwa kursu"
         android:inputType="text"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_save"
@@ -34,7 +42,10 @@
         android:id="@+id/tv_display_constans"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:layout_marginTop="10dp"
         android:text="Czas treningu"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/tv_display_constans2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,44 +55,58 @@
         android:id="@+id/tv_display_constans2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
         android:text="Liczba pozycji"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_display_constans"
+        app:layout_constraintStart_toStartOf="@+id/et_course_name"
         app:layout_constraintTop_toBottomOf="@+id/et_course_name" />
+
 
     <TextView
         android:id="@+id/tv_estimated_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
         android:text="00min 0sec"
-        app:layout_constraintEnd_toStartOf="@+id/tv_poses_count"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_display_constans" />
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_display_constans"
+        app:layout_constraintStart_toStartOf="@+id/tv_display_constans"
+        app:layout_constraintEnd_toEndOf="@+id/tv_display_constans" />
+
 
     <TextView
         android:id="@+id/tv_poses_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
         android:text="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_estimated_time"
-        app:layout_constraintTop_toBottomOf="@+id/tv_display_constans2" />
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_display_constans2"
+        app:layout_constraintStart_toStartOf="@+id/tv_display_constans2"
+        app:layout_constraintEnd_toEndOf="@+id/tv_display_constans2"
+        app:layout_constraintHorizontal_bias="0.5" />
+
 
     <Button
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:backgroundTint="#AF2C2C"
         android:text="Rozpocznij sesje"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_estimated_time" />
 
     <ScrollView
         android:layout_width="410dp"
-        android:layout_height="580dp"
+        android:layout_height="800dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_start">
