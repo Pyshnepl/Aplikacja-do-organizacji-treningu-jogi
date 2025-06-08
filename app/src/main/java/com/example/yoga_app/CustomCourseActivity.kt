@@ -18,26 +18,26 @@ import com.example.yoga_app.databinding.ActivityRelaxCourseBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.math.floor
 import androidx.lifecycle.lifecycleScope
+import com.example.yoga_app.databinding.SaveConfirmDialogBinding
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FieldValue
 
 
-private lateinit var binding: ActivityCustomCourseBinding
-private lateinit var firestore: FirebaseFirestore
-private val checkBoxList = mutableListOf<CheckBox>()
-private val maxSelected = 8
 
 class CustomCourseActivity : AppCompatActivity() {
 
-
+    private lateinit var binding: ActivityCustomCourseBinding
+    private lateinit var dialogBinding: SaveConfirmDialogBinding
+    private lateinit var firestore: FirebaseFirestore
+    private val checkBoxList = mutableListOf<CheckBox>()
+    private val maxSelected = 8
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         var email = intent.getStringExtra("extra_email").toString()
         firestore = FirebaseFirestore.getInstance()
-
         binding = ActivityCustomCourseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,29 +48,62 @@ class CustomCourseActivity : AppCompatActivity() {
         // Zapisz sesje własną
         binding.btnSave.setOnClickListener{
 
+
             val course_name = binding.etCourseName.text
 
-            // Wymagaj nazwy kursu
-            if(!course_name.isEmpty()){
-                // Rozważyć tworzenie i aktualizacje
-                lifecycleScope.launch{
-                    saveCourse(email,course_name.toString())
 
-                    // Przejście do HomePage
-                    val intent = Intent(applicationContext, HomeActivity::class.java)
-                    intent.putExtra("extra_email",email)
-                    Log.i("CUSTOMCOURSE","Finished")
-                    startActivity(intent)
-                    finish()
+            // Sprawdź czy zaznaczono cokolwiek
+            if (getCheckedCount() > 0){
+
+                // Wymagaj nazwy kursu
+                if(!course_name.isEmpty()){
+
+                    // Definiowanie dialogBinding
+                    val saveConfirmDialogBinding = SaveConfirmDialogBinding.inflate(layoutInflater)
+
+                    // Utworzenie okna Dialogu
+                    val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setView(saveConfirmDialogBinding.root)
+                        .create()
+
+                    saveConfirmDialogBinding.btnConfirm.setOnClickListener {
+
+
+                        // Zapisanie kursu do bazy danych i przejście do HomeView
+                        lifecycleScope.launch{
+                            saveCourse(email,course_name.toString())
+
+                            // Przejście do HomePage
+                            val intent = Intent(applicationContext, HomeActivity::class.java)
+                            intent.putExtra("extra_email",email)
+                            dialog.dismiss()
+                            Log.i("CUSTOMCOURSE","Finished")
+                            startActivity(intent)
+                            finish()
+
+                        }
+
+                    }
+
+                    saveConfirmDialogBinding.btnDecline.setOnClickListener {
+
+                        dialog.dismiss()
+                    }
+
+                    dialog.show()
 
                 }
-
-
+                else
+                {
+                    Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+                }
             }
             else
             {
-                Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Nie wybrano żadnej pozycji", Toast.LENGTH_SHORT).show()
             }
+
+
         }
 
 
