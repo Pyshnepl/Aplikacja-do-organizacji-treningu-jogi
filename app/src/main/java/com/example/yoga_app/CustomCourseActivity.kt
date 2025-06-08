@@ -18,91 +18,159 @@ import com.example.yoga_app.databinding.ActivityRelaxCourseBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.math.floor
 import androidx.lifecycle.lifecycleScope
+import com.example.yoga_app.databinding.SaveConfirmDialogBinding
+import com.example.yoga_app.databinding.StartConfirmDialogBinding
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FieldValue
 
 
-private lateinit var binding: ActivityCustomCourseBinding
-private lateinit var firestore: FirebaseFirestore
-private val checkBoxList = mutableListOf<CheckBox>()
-private val maxSelected = 8
 
 class CustomCourseActivity : AppCompatActivity() {
 
-
+    private lateinit var binding: ActivityCustomCourseBinding
+    private lateinit var saveConfirmDialogBinding: SaveConfirmDialogBinding
+    private lateinit var startConfirmDialogBinding: StartConfirmDialogBinding
+    private lateinit var firestore: FirebaseFirestore
+    private val checkBoxList = mutableListOf<CheckBox>()
+    private val maxSelected = 8
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         var email = intent.getStringExtra("extra_email").toString()
         firestore = FirebaseFirestore.getInstance()
-
         binding = ActivityCustomCourseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Utworzenie checkboxów, ładowanie nazw pozycji i obrazów z firestore
         loadPoses()
-
+        val course_name = binding.etCourseName.text
 
         // Zapisz sesje własną
         binding.btnSave.setOnClickListener{
 
-            val course_name = binding.etCourseName.text
 
-            // Wymagaj nazwy kursu
-            if(!course_name.isEmpty()){
-                // Rozważyć tworzenie i aktualizacje
-                lifecycleScope.launch{
-                    saveCourse(email,course_name.toString())
+            // Sprawdź czy zaznaczono cokolwiek
+            if (getCheckedCount() > 0){
 
-                    // Przejście do HomePage
-                    val intent = Intent(applicationContext, HomeActivity::class.java)
-                    intent.putExtra("extra_email",email)
-                    Log.i("CUSTOMCOURSE","Finished")
-                    startActivity(intent)
-                    finish()
+                // Wymagaj nazwy kursu
+                if(!course_name.isEmpty()){
+
+                    // Definiowanie dialogBinding
+                    saveConfirmDialogBinding = SaveConfirmDialogBinding.inflate(layoutInflater)
+
+                    // Utworzenie okna Dialogu
+                    val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setView(saveConfirmDialogBinding.root)
+                        .create()
+
+                    saveConfirmDialogBinding.btnConfirm.setOnClickListener {
+
+                        // Zapisanie kursu do bazy danych i przejście do HomeView
+                        lifecycleScope.launch{
+                            saveCourse(email,course_name.toString())
+
+                            // Przejście do HomePage
+                            val intent = Intent(applicationContext, HomeActivity::class.java)
+                            intent.putExtra("extra_email",email)
+                            dialog.dismiss()
+                            Log.i("CUSTOMCOURSE","Finished")
+                            startActivity(intent)
+                            finish()
+
+                        }
+
+                    }
+
+                    saveConfirmDialogBinding.btnDecline.setOnClickListener {
+
+                        dialog.dismiss()
+                    }
+
+                    dialog.show()
 
                 }
-
-
+                else
+                {
+                    Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+                }
             }
             else
             {
-                Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Nie wybrano żadnej pozycji", Toast.LENGTH_SHORT).show()
             }
+
+
         }
 
 
         // Zacznij sesje własną
         binding.btnStart.setOnClickListener{
-            // Intent do przebiegu kursu dodać extra liste
-            // Implementacja intentu
-            val intent = Intent(this, RelaxCourseActivity::class.java)
-            intent.putExtra("extra_email",email)
 
-            var extra_list = ArrayList<String>()
-            // Nadpisanie listy "extra_list", o nazwy pozycji
-            var num = 1
-            lifecycleScope.launch{
-                for (item in checkBoxList){
 
-                    if (item.isChecked){
+            // Upewnij się, że wybrano cokolwiek
+            if(getCheckedCount()>0)
+            {
+                if (!course_name.isEmpty())
+                {
+                    startConfirmDialogBinding = StartConfirmDialogBinding.inflate(layoutInflater)
 
-                        var exerciseDoc = firestore.collection("Exercise").whereEqualTo("Name",item.text)
-                            .get()
-                            .await()
+                    // Utworzenie okna Dialogu
+                    val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setView(startConfirmDialogBinding.root)
+                        .create()
 
-                        var exerciseId = exerciseDoc.firstOrNull()?.id.toString()
-                        extra_list.add(exerciseId)
+                    startConfirmDialogBinding.btnConfirm.setOnClickListener{
+
+                        // Implementacja intentu
+                        val intent = Intent(this, RelaxCourseActivity::class.java)
+                        intent.putExtra("extra_email",email)
+
+                        var extra_list = ArrayList<String>()
+                        // Nadpisanie listy "extra_list", o nazwy pozycji
+                        var num = 1
+                        lifecycleScope.launch{
+                            for (item in checkBoxList){
+
+                                if (item.isChecked){
+
+                                    var exerciseDoc = firestore.collection("Exercise").whereEqualTo("Name",item.text)
+                                        .get()
+                                        .await()
+
+                                    var exerciseId = exerciseDoc.firstOrNull()?.id.toString()
+                                    extra_list.add(exerciseId)
+                                }
+                            }
+                            Log.i("EXTRA_LIST",extra_list.toString())
+                            intent.putExtra("extra_list",extra_list)
+                            dialog.dismiss()
+                            startActivity(intent)
+                            finish()
+
+                        }
+
                     }
-                }
-                Log.i("EXTRA_LIST",extra_list.toString())
-                intent.putExtra("extra_list",extra_list)
-                startActivity(intent)
-                finish()
 
+                    startConfirmDialogBinding.btnDecline.setOnClickListener{
+                        dialog.dismiss()
+                    }
+
+                    dialog.show()
+                }
+                else
+                {
+                    Toast.makeText(this,"Uzupełnij nazwe kursu", Toast.LENGTH_SHORT).show()
+                }
             }
+            else
+            {
+                Toast.makeText(this,"Nie wybrano żadnej pozycji",Toast.LENGTH_SHORT).show()
+            }
+
+
+
 
 
         }
