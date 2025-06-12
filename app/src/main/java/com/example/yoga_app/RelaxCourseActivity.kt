@@ -12,11 +12,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.yoga_app.databinding.ActivityRelaxCourseBinding
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.*
-
+import kotlinx.coroutines.tasks.await
+import kotlin.collections.mutableListOf
 
 
 class RelaxCourseActivity : AppCompatActivity() {
@@ -30,6 +32,9 @@ class RelaxCourseActivity : AppCompatActivity() {
     private var isPaused = false
     private var remainingTime = 0
     private var max_poses = 8
+    private var collectiveDuration: Int = 0
+    private var doneExercises = mutableListOf<String>()
+    private var timestamp: Timestamp = Timestamp.now()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,7 @@ class RelaxCourseActivity : AppCompatActivity() {
 
         loadScreen(doc_name,email,extra_list)
 
+
     }
 
     private fun loadScreen(doc_name: String, email: String, extra_list: ArrayList<String>?){
@@ -59,9 +65,12 @@ class RelaxCourseActivity : AppCompatActivity() {
         binding.main.setBackgroundColor(ContextCompat.getColor(this, colorId))
 
         // Opróżnianie poprzednich danych po zmianie karty
+        collectiveDuration = 0
         exercises.clear()
-        // Aktualizuj liste o pozycje z CustomCourse,
-        // jeśli "extra_list" nie jest puste
+        doneExercises.clear()
+        timestamp = Timestamp.now()
+
+        // Aktualizuj liste o pozycje z CustomCourse, jeśli "extra_list" nie jest puste
         extra_list?.let{
             exercises.addAll(it)
         }
@@ -79,7 +88,7 @@ class RelaxCourseActivity : AppCompatActivity() {
                     }
                 }
                 if (exercises.isNotEmpty()) {
-                    loadExercise(currentExerciseIndex, email)
+                    loadExercise(currentExerciseIndex, email, doc_name)
                 }
             }
             .addOnFailureListener{ exception ->
@@ -88,7 +97,7 @@ class RelaxCourseActivity : AppCompatActivity() {
 
     }
 
-    private fun loadExercise(index: Int,email: String) {
+    private fun loadExercise(index: Int,email: String, doc_name: String) {
 
         val exerciseId = exercises[index]
         firestore.collection("Exercise").document(exerciseId)
@@ -108,14 +117,14 @@ class RelaxCourseActivity : AppCompatActivity() {
                 binding.ivPose.setImageResource(imgId)
 
                 // Rozpoczenie liczenia czasu (ładowanie progress bar i licznika sekund)
-                startCountdown(duration,email)
+                startCountdown(duration,email, doc_name)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Nie udało się załadować ćwiczenia", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun startCountdown(duration: Int?,email: String) {
+    private fun startCountdown(duration: Int?,email: String, doc_name: String) {
         if (duration == null) return
 
         countdownJob?.cancel() // zatrzymaj poprzedni jeśli istniał
@@ -133,19 +142,22 @@ class RelaxCourseActivity : AppCompatActivity() {
                     binding.tvTime.text = (duration - i).toString()
                     i++
                     remainingTime = duration - i
-                    delay(100L)
+                    delay(1000L)
                 } else {
                     delay(10L) // krótki delay, żeby nie zjadać CPU
                 }
             }
+            // Zapisanie łącznego czsu trwania kursu i listy wykonanych pozycji
+            collectiveDuration += duration
+            doneExercises.add(exercises[currentExerciseIndex])
             currentExerciseIndex++
             // Warunek zakończenia sesji
             if (currentExerciseIndex >= exercises.size){
-                FinishActivity(email)
+                FinishActivity(email, doc_name)
             }
             else
             {
-            loadExercise(currentExerciseIndex,email)
+            loadExercise(currentExerciseIndex,email, doc_name)
             }
         }
 
@@ -169,21 +181,56 @@ class RelaxCourseActivity : AppCompatActivity() {
             currentExerciseIndex++
             // Warunek zatrzymania sesji
             if (currentExerciseIndex >= exercises.size){
-                FinishActivity(email)
+                FinishActivity(email, doc_name)
             }else{
-                loadExercise(currentExerciseIndex,email)
+                loadExercise(currentExerciseIndex,email, doc_name)
             }
 
         }
     }
 
     // Zakończenie kursu i przkazanie maila jako extra
-    private fun FinishActivity(email: String){
+    private fun FinishActivity(email: String, doc_name: String){
 
-            Toast.makeText(this, "Kurs zakończony!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("extra_email",email)
+        Toast.makeText(this, "Kurs zakończony!", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra("extra_email",email)
+        Log.i("WYKONANE ĆWICZENIA", doneExercises.toString())
+
+        lifecycleScope.launch {
+
+            // Zapisanie historii użytkownika, i przejście do HomeView
+            if (collectiveDuration != 0)
+            {
+                writeHistory(email, doc_name)
+            }
             startActivity(intent)
+
+        }
+
+
+    }
+
+    suspend fun writeHistory(email: String,doc_name: String){
+
+        // Utworzenie zbioru danych do Firestore
+        val dataset = hashMapOf <String, Any>(
+
+            "user_ID" to email,
+            "course_name" to doc_name,
+            "poses" to doneExercises,
+            "duration" to collectiveDuration,
+            "time_start" to timestamp
+        )
+
+        // Utworzenie dokumentu i czekanie na nadpisanie bazy danych
+        firestore.collection("History")
+            .add(dataset)
+            .await()
+
+        Toast.makeText(this,"Zapisano postęp w historii użytkownika", Toast.LENGTH_SHORT).show()
+
+
     }
 
 }
