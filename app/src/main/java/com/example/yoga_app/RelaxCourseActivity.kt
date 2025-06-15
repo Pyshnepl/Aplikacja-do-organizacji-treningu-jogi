@@ -40,9 +40,11 @@ class RelaxCourseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val doc_name = intent.getStringExtra("extra_document").toString()
+        val doc_name = intent.getStringExtra("extra_name").toString()
         var email = intent.getStringExtra("extra_email").toString()
         var extra_list = intent.getStringArrayListExtra("extra_list")
+        Log.i("NAME",doc_name)
+
         firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityRelaxCourseBinding.inflate(layoutInflater)

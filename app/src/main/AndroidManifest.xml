@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Yoga_app"
         tools:targetApi="31">
         <activity
+            android:name=".HistoryDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".CustomCourseActivity"
             android:exported="false" />
         <activity
