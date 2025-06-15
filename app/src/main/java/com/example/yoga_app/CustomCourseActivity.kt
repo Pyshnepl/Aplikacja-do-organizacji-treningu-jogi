@@ -145,6 +145,8 @@ class CustomCourseActivity : AppCompatActivity() {
                             }
                             Log.i("EXTRA_LIST",extra_list.toString())
                             intent.putExtra("extra_list",extra_list)
+                            intent.putExtra("extra_name",course_name.toString())
+                            Log.i("NAME",course_name.toString())
                             dialog.dismiss()
                             startActivity(intent)
                             finish()

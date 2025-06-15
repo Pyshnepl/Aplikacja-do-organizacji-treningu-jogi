@@ -86,6 +86,14 @@ class HomeActivity : AppCompatActivity() {
 
         }
 
+        // Przejście do historii
+        binding.buttonHistoria.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            intent.putExtra("extra_email",email)
+            startActivity(intent)
+
+        }
+
     }
 
 
