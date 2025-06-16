@@ -64,6 +64,9 @@ class CustomCourseActivity : AppCompatActivity() {
                     val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
                         .setView(saveConfirmDialogBinding.root)
                         .create()
+                    dialog.window?.setBackgroundDrawable(
+                        ContextCompat.getDrawable(this, R.drawable.rounded_corner)
+                    )
 
                     saveConfirmDialogBinding.btnConfirm.setOnClickListener {
 
@@ -120,6 +123,9 @@ class CustomCourseActivity : AppCompatActivity() {
                     val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
                         .setView(startConfirmDialogBinding.root)
                         .create()
+                    dialog.window?.setBackgroundDrawable(
+                        ContextCompat.getDrawable(this, R.drawable.rounded_corner)
+                    )
 
                     startConfirmDialogBinding.btnConfirm.setOnClickListener{
 

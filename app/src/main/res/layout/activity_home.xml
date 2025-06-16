@@ -61,7 +61,7 @@
             android:layout_width="320dp"
             android:layout_height="80dp"
             android:layout_marginTop="25dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#A29AEB"
             android:elevation="8dp"
             android:fontFamily="@font/open_sans_light"
             android:paddingStart="25dp"
