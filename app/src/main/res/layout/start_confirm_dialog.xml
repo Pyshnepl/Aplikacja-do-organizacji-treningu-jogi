@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="275dp"
+    android:layout_width="300dp"
     android:layout_height="150dp">
 
     <LinearLayout
@@ -13,28 +13,65 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="@font/open_sans_light"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_gravity="center"
             android:text="Wybrano przycisk rozpoczęcia sesji. Zaplanowany kurs nie zostanie zapisany, czy chcesz dalej kontynuować?"
 
             />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="60dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2">
 
-            <Button
+
+
+            <FrameLayout
                 android:id="@+id/btn_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Zgadzam się"
-                />
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:elevation="3dp"
+                android:layout_marginEnd="50dp"
+                android:background="@drawable/circle_white_login"
+                >
 
-            <Button
+                <ImageView
+                    android:id="@+id/icon_confirm"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/check_icon"
+                    />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/btn_decline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nie zgadzam się"/>
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:elevation="3dp"
+                android:background="@drawable/circle_white_login"
 
+                >
+
+                <ImageView
+                    android:id="@+id/icon_decline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/cancel_icon"
+                    />
+            </FrameLayout>
 
         </LinearLayout>
 
