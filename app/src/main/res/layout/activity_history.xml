@@ -77,11 +77,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <TableLayout
-            android:id="@+id/tableLayout"
+        <LinearLayout
+            android:id="@+id/history_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:stretchColumns="1" />
+            android:orientation="vertical"
+            android:padding="16dp" />
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,8 @@ import java.util.Date
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Locale
+import android.widget.TextView
+
 
 
 class HistoryActivity : AppCompatActivity() {
@@ -56,39 +58,34 @@ class HistoryActivity : AppCompatActivity() {
         firestore.collection("History").whereEqualTo("user_ID",email)
             .get()
             .addOnSuccessListener { documents ->
+                //dodalam sortowanie
+                val sortedDocs = documents.sortedByDescending {
+                    it.getTimestamp("time_start")?.toDate()
+                }
 
-
-                for (document in documents) {
+                for (document in sortedDocs) {
 
                     val timestamp = document.getTimestamp("time_start")
                     if (timestamp != null) {
                         val docID = document.id
                         val date = timestamp.toDate()
-                        val tableRow = TableRow(this).apply {
-                            layoutParams = TableRow.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
-                        }
-                        val button = Button(this).apply {
-                            layoutParams = TableRow.LayoutParams(
-                                0,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                1f
-                            )
-                            text = formatter.format(date)
-                            setOnClickListener {
-                                val intent = Intent(this@HistoryActivity,HistoryDetailsActivity::class.java)
-                                intent.putExtra("documentID",docID)
-                                startActivity(intent)
-                            }
+                        //zmieniłam na kartę zamiast tabeli
+                        val historyCard = layoutInflater.inflate(R.layout.history_log_card, null, false)
+                        val textView = historyCard.findViewById<TextView>(R.id.card_text)
 
-
+                        textView.text = formatter.format(date)
+                        historyCard.setOnClickListener {
+                            val intent = Intent(this@HistoryActivity, HistoryDetailsActivity::class.java)
+                            intent.putExtra("documentID", docID)
+                            startActivity(intent)
                         }
-                        tableRow.addView(button)
-                        binding.tableLayout.addView(tableRow)
+                        val layoutParams = ViewGroup.MarginLayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        layoutParams.setMargins(0, 15, 0, 32)
+                        binding.historyContainer.addView(historyCard, layoutParams)
                     }
-
                 }
             }
             .addOnFailureListener {
