@@ -5,17 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.yoga_app.databinding.ActivityRelaxCourseBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import kotlin.collections.mutableListOf
@@ -40,9 +35,13 @@ class RelaxCourseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val doc_name = intent.getStringExtra("extra_name").toString()
-        var email = intent.getStringExtra("extra_email").toString()
-        var extra_list = intent.getStringArrayListExtra("extra_list")
+        var doc_name = intent.getStringExtra("extra_document").toString()
+        val email = intent.getStringExtra("extra_email").toString()
+        val extra_list = intent.getStringArrayListExtra("extra_list")
+        val course_name = intent.getStringExtra("extra_name").toString()
+        if (doc_name == null){
+            doc_name = course_name
+        }
         Log.i("NAME",doc_name)
 
         firestore = FirebaseFirestore.getInstance()
