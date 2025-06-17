@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.graphics.Typeface
+import android.view.Gravity
+import androidx.core.content.res.ResourcesCompat
 
 
 class HistoryDetailsActivity : AppCompatActivity() {
@@ -82,15 +85,33 @@ class HistoryDetailsActivity : AppCompatActivity() {
     }
 
     private fun addRowToTable(name: String, time: Int?) {
-        val tableRow = TableRow(this)
+        val tableRow = TableRow(this).apply {
+            layoutParams = TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT
+            )
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
 
-        val textView1 = TextView(this)
-        textView1.text = name
-        textView1.setPadding(8, 8, 8, 8)
+        val textView1 = TextView(this).apply {
+            text = name
+            setPadding(16, 8, 16, 8)
+            textSize = 25f
+            gravity = Gravity.START
+            typeface = ResourcesCompat.getFont(context, R.font.open_sans_light)
+            setTypeface(typeface, Typeface.BOLD)
+        }
 
-        val textView2 = TextView(this)
-        textView2.text = time.toString()
-        textView1.setPadding(8, 8, 8, 8)
+
+
+        val textView2 = TextView(this).apply {
+            text = time.toString()
+            setPadding(16, 8, 16, 8)
+            textSize = 22f
+            gravity = Gravity.END
+            typeface = ResourcesCompat.getFont(context, R.font.open_sans_light)
+            setTypeface(typeface, Typeface.BOLD)
+        }
 
         tableRow.addView(textView1)
         tableRow.addView(textView2)
